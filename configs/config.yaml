@@ -1,0 +1,46 @@
+# =====================================================================
+# Quantitative System Configuration: Pooled Cross-Sectional Meta-Labeling
+# =====================================================================
+
+dataset:
+  portfolio_path: "data/final_portfolio.csv"
+  benchmark_ticker: "VNINDEX"
+  start_date: "2018-07-01"
+  end_date: "2026-06-01"
+  data_source: "VCI"
+  raw_cache_dir: "data/raw"
+  calendar_gap_threshold_days: 7
+
+labeling:
+  profit_taking_pt: 2.5        # pt multiplier for upper barrier
+  stop_loss_sl: 1.5            # sl multiplier for lower barrier
+  horizon_bars: 10             # Temporal horizontal timeout (h)
+  vol_lookback: 20             # Daily return standard deviation rolling window
+
+econometrics_pipeline:
+  correlation_threshold: 0.85  # Pairwise collinearity drop threshold
+  min_target_corr: 0.01        # Minimum informativeness correlation with target
+  standardize: true
+
+cross_validation:
+  n_splits: 5                  # Number of chronological blocks
+  embargo_pct: 0.01            # Post-test partition embargo percentage
+
+meta_model:
+  penalty: "l1"
+  c_regularization: 0.1        # Inverse regularization strength
+  solver: "liblinear"
+  class_weight: "balanced"
+  max_iter: 1000
+  random_state: 42
+  optimal_threshold: 0.64      # Acceptance cut-off P*(Meta) >= 0.64
+
+backtest:
+  initial_capital: 1000000000.0  # 1,000,000,000 VND
+  max_positions: 5               # Maximum concurrent long slots
+  friction_pct: 0.0030           # 0.30% round-trip friction (brokerage, tax, slippage)
+  risk_free_rate: 0.04           # 4.0% annual benchmark proxy
+
+reinforcement_learning:
+  vol_clip: 0.05
+  min_allocation_threshold: 0.05
